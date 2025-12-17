@@ -1,6 +1,6 @@
 
 // customer.controller.js
-const Customer = require('../models/customer.model'); // correct relative path
+const Customer = require('../models/customer.model'); 
 
 
 // GET all customers
