@@ -1,30 +1,19 @@
-
-// customer.model.js
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db'); 
-
+const { Sequelize, DataTypes } = require('sequelize');
+const sequelize = new Sequelize('customerdb', 'root', 'Neno', {
+  host: 'localhost',
+  dialect: 'mysql'
+});
 
 const Customer = sequelize.define('Customer', {
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true
-  },
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  email: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  phone: {
-    type: DataTypes.STRING,
-    allowNull: false
-  }
+  name: { type: DataTypes.STRING, allowNull: false },
+  email: { type: DataTypes.STRING, allowNull: false, unique: true },
+  phone: { type: DataTypes.STRING },
+  balance: { type: DataTypes.DECIMAL(15,2), defaultValue: 0 }
 }, {
   tableName: 'customers',
-  timestamps: false
+  timestamps: true
 });
+
+sequelize.sync(); // Ensure table is created
 
 module.exports = Customer;

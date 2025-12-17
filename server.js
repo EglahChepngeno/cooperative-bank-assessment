@@ -1,13 +1,12 @@
+const express = require('express');
+const bodyParser = require('body-parser');
+const customerRoutes = require('./routes/customer.routes');
 
-const app = require('./app');
-const sequelize = require('./config/db');
+const app = express();
+app.use(bodyParser.json());
+
+// Customer routes
+app.use('/api/customers', customerRoutes);
 
 const PORT = process.env.PORT || 3000;
-
-// Sequelize auto-creates database tables
-sequelize.sync({ force: false })
-  .then(() => {
-    console.log('Database synced');
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-  })
-  .catch(err => console.error('Error syncing database:', err));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
