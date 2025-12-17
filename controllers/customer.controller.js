@@ -1,4 +1,5 @@
 const Customer = require('../models/customer.model');
+const logger = require('../config/logger');
 
 // CREATE (POST) new customer
 exports.createCustomer = async (req, res) => {
@@ -7,7 +8,7 @@ exports.createCustomer = async (req, res) => {
     const customer = await Customer.create({ name, email, phone, balance });
     res.status(201).json(customer);
   } catch (err) {
-    console.error(err);
+    logger.error(err.message);
     res.status(500).json({ error: 'Failed to create customer' });
   }
 };
@@ -18,7 +19,7 @@ exports.getAllCustomers = async (req, res) => {
     const customers = await Customer.findAll();
     res.json(customers);
   } catch (err) {
-    console.error(err);
+    logger.error(err.message);
     res.status(500).json({ error: 'Failed to fetch customers' });
   }
 };
@@ -30,7 +31,7 @@ exports.getCustomerById = async (req, res) => {
     if (!customer) return res.status(404).json({ error: 'Customer not found' });
     res.json(customer);
   } catch (err) {
-    console.error(err);
+    logger.error(err.message);
     res.status(500).json({ error: 'Failed to fetch customer' });
   }
 };
@@ -42,7 +43,7 @@ exports.getBalance = async (req, res) => {
     if (!customer) return res.status(404).json({ error: 'Customer not found' });
     res.json({ id: customer.id, name: customer.name, balance: customer.balance });
   } catch (err) {
-    console.error(err);
+    logger.error(err.message);
     res.status(500).json({ error: 'Failed to fetch balance' });
   }
 };
@@ -53,14 +54,16 @@ exports.updateCustomer = async (req, res) => {
     const { name, email, phone, balance } = req.body;
     const customer = await Customer.findByPk(req.params.id);
     if (!customer) return res.status(404).json({ error: 'Customer not found' });
+
     customer.name = name;
     customer.email = email;
     customer.phone = phone;
     customer.balance = balance;
+
     await customer.save();
     res.json(customer);
   } catch (err) {
-    console.error(err);
+    logger.error(err.message);
     res.status(500).json({ error: 'Failed to update customer' });
   }
 };
@@ -71,26 +74,29 @@ exports.patchCustomer = async (req, res) => {
     const updates = req.body;
     const customer = await Customer.findByPk(req.params.id);
     if (!customer) return res.status(404).json({ error: 'Customer not found' });
+
     Object.keys(updates).forEach(key => {
       customer[key] = updates[key];
     });
+
     await customer.save();
     res.json(customer);
   } catch (err) {
-    console.error(err);
+    logger.error(err.message);
     res.status(500).json({ error: 'Failed to partially update customer' });
   }
 };
 
-// DELETE customer
+// DELETE
 exports.deleteCustomer = async (req, res) => {
   try {
     const customer = await Customer.findByPk(req.params.id);
     if (!customer) return res.status(404).json({ error: 'Customer not found' });
+
     await customer.destroy();
     res.json({ message: 'Customer deleted' });
   } catch (err) {
-    console.error(err);
+    logger.error(err.message);
     res.status(500).json({ error: 'Failed to delete customer' });
   }
 };
@@ -115,7 +121,7 @@ exports.transferFunds = async (req, res) => {
 
     res.json({ message: 'Transfer successful', fromCustomer, toCustomer });
   } catch (err) {
-    console.error(err);
+    logger.error(err.message);
     res.status(500).json({ error: 'Failed to transfer funds' });
   }
 };

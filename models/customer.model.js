@@ -1,9 +1,14 @@
+
 const { Sequelize, DataTypes } = require('sequelize');
+
+// Connect to MySQL
 const sequelize = new Sequelize('customerdb', 'root', 'Neno', {
   host: 'localhost',
-  dialect: 'mysql'
+  dialect: 'mysql',
+  logging: false
 });
 
+// Define Customer model
 const Customer = sequelize.define('Customer', {
   name: { type: DataTypes.STRING, allowNull: false },
   email: { type: DataTypes.STRING, allowNull: false, unique: true },
@@ -14,6 +19,7 @@ const Customer = sequelize.define('Customer', {
   timestamps: true
 });
 
-sequelize.sync(); // Ensure table is created
+// Sync the model (creates table)
+sequelize.sync();
 
 module.exports = Customer;
